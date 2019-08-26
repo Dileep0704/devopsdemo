@@ -1,6 +1,6 @@
 node {
    stage('Source checkout') {
-      git 'https://github.com/AdityaSP/devopsdemo'
+      git 'https://github.com/Dileep0704/devopsdemo'
    }
    stage('mvn compile'){
        sh label: '', script: 'mvn install'
