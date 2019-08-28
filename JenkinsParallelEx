@@ -1,0 +1,40 @@
+def pnodes=[:]
+
+pnodes['onMaster'] ={
+    node('master') {
+   stage('Source checkout') {
+      git 'https://github.com/Dileep0704/devopsdemo'
+   }
+   stage('mvn compile'){
+       sh label: '', script: 'mvn install'
+   }
+   stage('deploy html file'){
+       sh label: '', script: 'cp index.html /var/www/html/pipeline-adi-index.html'
+   }
+   stage('Publish test results'){
+       junit 'target/surefire-reports/*.xml'
+       
+   }
+   stage('Archive artifacts'){
+       archiveArtifacts 'target/*.jar'
+   }
+}
+}
+pnodes['onAgent'] ={
+ node('agent-3.92.192.151') {
+   stage('Source checkout') {
+      git 'https://github.com/Dileep0704/devopsdemo'
+   }
+   stage('mvn compile'){
+       sh label: '', script: 'mvn install'
+   }
+   stage('Publish test results'){
+       junit 'target/surefire-reports/*.xml'
+       
+   }
+   stage('Archive artifacts'){
+       archiveArtifacts 'target/*.jar'
+   }
+}   
+}
+parallel pnodes
